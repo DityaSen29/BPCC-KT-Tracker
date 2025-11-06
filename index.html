@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPCC KT Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex items-center gap-4">
+                <img src="photos/bpcclogo_light.png" alt="BPCC Logo" class="h-16 w-auto">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">BITS Pilani Consulting Club</h1>
+                    <p class="text-gray-600 text-lg mt-1">Knowledge Transfer Tracker</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Next KT Widget -->
+        <section id="nextKtWidget" class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <!-- Will be populated by JavaScript -->
+        </section>
+
+        <!-- Calendar Section -->
+        <section class="calendar-section bg-white rounded-lg shadow-md p-8">
+            <div class="flex justify-between items-center mb-6">
+                <button id="prevMonth" class="month-nav-btn px-4 py-2 rounded-lg">
+                    <span>&larr; Previous</span>
+                </button>
+                <h2 id="calendarTitle" class="text-2xl font-bold text-gray-900">November 2025</h2>
+                <button id="nextMonth" class="month-nav-btn px-4 py-2 rounded-lg">
+                    <span>Next &rarr;</span>
+                </button>
+            </div>
+            <div id="calendarContainer" class="grid grid-cols-7 gap-2">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="ktModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="modal-content bg-white rounded-lg shadow-lg w-full">
+            <div class="modal-header flex justify-between items-center p-6">
+                <h2 id="modalTopic" class="text-2xl font-bold text-white"></h2>
+                <button onclick="closeModal()" class="modal-close-btn text-white hover:text-gray-200 text-3xl font-light leading-none">&times;</button>
+            </div>
+            <div class="modal-body p-6">
+                <div class="info-card mb-4">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Presenter</p>
+                    <p id="modalPresenter" class="text-gray-900 font-semibold text-lg"></p>
+                </div>
+                <div class="info-card mb-4">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Date & Time</p>
+                    <p id="modalDateTime" class="text-gray-900 font-semibold text-lg"></p>
+                </div>
+                <div class="info-card mb-4">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Venue</p>
+                    <p id="modalVenue" class="text-gray-900 font-semibold text-lg"></p>
+                </div>
+                <div class="info-card mb-4">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Agenda</p>
+                    <ul id="modalAgenda" class="agenda-list list-none text-gray-700 space-y-2 text-base"></ul>
+                </div>
+                <div class="info-card mb-0">
+                    <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Relevance</p>
+                    <p id="modalRelevance" class="text-gray-700 text-base leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variable to store KT data
+        let ktData = [];
+        
+        // Track current calendar view (month offset from current month)
+        let currentMonthOffset = 0;
+
+        // Fetch KT data from JSON file
+        async function loadKtData() {
+            try {
+                const response = await fetch('ktdata.json');
+                ktData = await response.json();
+                // Initialize the page after data is loaded
+                renderNextKtWidget();
+                renderCalendar();
+                setupMonthNavigation();
+            } catch (error) {
+                console.error('Error loading KT data:', error);
+                document.getElementById('nextKtWidget').innerHTML = `
+                    <div class="text-center">
+                        <p class="text-xl text-red-600">Error loading KT data. Please try again.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Utility: Format date
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function formatTime(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        // Get display time - either custom time field or formatted date time
+        function getDisplayTime(kt) {
+            if (kt.time && kt.time !== "TBA") {
+                return kt.time;
+            } else if (kt.time === "TBA") {
+                return "TBA";
+            }
+            return formatTime(kt.date);
+        }
+
+        // Get next KT
+        function getNextKt() {
+            const now = new Date();
+            return ktData.find(kt => new Date(kt.date) > now) || null;
+        }
+
+        // Render Next KT Widget
+        function renderNextKtWidget() {
+            const nextKt = getNextKt();
+            const widget = document.getElementById('nextKtWidget');
+
+            if (!nextKt) {
+                widget.innerHTML = `
+                    <div class="text-center">
+                        <p class="text-xl text-gray-600">No upcoming KTs scheduled. Check back soon!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            widget.innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-blue-600 mb-2">Next KT: ${nextKt.topic}</h2>
+                    <p class="text-lg text-gray-700 mb-4">Presenter: <span class="font-semibold">${nextKt.presenter}</span></p>
+                    <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">DATE</p>
+                            <p class="text-lg font-semibold text-gray-900">${formatDate(nextKt.date)}</p>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-600 mb-1">TIME</p>
+                            <p class="text-lg font-semibold text-gray-900">${getDisplayTime(nextKt)}</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4">Venue: <span class="font-semibold">${nextKt.venue}</span></p>
+                    <div class="bg-blue-50 rounded-lg p-4">
+                        <p class="text-sm text-gray-600 mb-2">COUNTDOWN</p>
+                        <p id="countdown" class="text-2xl font-bold text-blue-600"></p>
+                    </div>
+                </div>
+            `;
+
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+        }
+
+        // Update countdown timer
+        function updateCountdown() {
+            const nextKt = getNextKt();
+            if (!nextKt) return;
+
+            const now = new Date();
+            const ktDate = new Date(nextKt.date);
+            const diff = ktDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = 'Event has started!';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        // Render Calendar
+        function renderCalendar() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            
+            // Calculate the year and month to display based on offset
+            const displayDate = new Date(currentYear, currentMonth + currentMonthOffset, 1);
+            const year = displayDate.getFullYear();
+            const month = displayDate.getMonth();
+            
+            // Update calendar title
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('calendarTitle').textContent = `${monthNames[month]} ${year}`;
+            
+            // Update button states
+            const prevBtn = document.getElementById('prevMonth');
+            const nextBtn = document.getElementById('nextMonth');
+            
+            // Disable prev button if we're at current month
+            prevBtn.disabled = currentMonthOffset === 0;
+            
+            // Disable next button if we're at +1 month
+            nextBtn.disabled = currentMonthOffset === 1;
+
+            // Days of week header
+            const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const container = document.getElementById('calendarContainer');
+            container.innerHTML = '';
+
+            // Add day headers
+            daysOfWeek.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'day-header text-center font-semibold text-gray-600 text-sm py-2';
+                header.textContent = day;
+                container.appendChild(header);
+            });
+
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Add empty cells before month starts
+            for (let i = 0; i < firstDay; i++) {
+                container.appendChild(document.createElement('div'));
+            }
+
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                const cellDate = new Date(year, month, day);
+
+                // Check if this day has a KT (including today and future)
+                const hasKt = ktData.some(kt => {
+                    const ktDate = new Date(kt.date);
+                    return ktDate.getFullYear() === year &&
+                           ktDate.getMonth() === month &&
+                           ktDate.getDate() === day;
+                });
+
+                dayCell.className = 'calendar-day aspect-square flex items-center justify-center rounded-lg border-2 cursor-pointer transition-all hover:border-blue-400 relative';
+
+                // Check if this is today's date
+                const isToday = day === now.getDate() && 
+                               month === now.getMonth() && 
+                               year === now.getFullYear();
+
+                // Create day number container
+                const dayNumber = document.createElement('span');
+                dayNumber.textContent = day;
+
+                // Style based on today and KT status
+                if (isToday) {
+                    dayCell.className += ' today bg-blue-600 text-white border-blue-600';
+                    // Add blue indicator if there's a KT today
+                    if (hasKt) {
+                        const ktIndicator = document.createElement('div');
+                        ktIndicator.className = 'kt-indicator w-4 h-4 bg-white rounded-full absolute top-0.5 left-0.5 shadow-lg z-10';
+                        dayCell.appendChild(ktIndicator);
+                    }
+                } else if (hasKt) {
+                    // Check if KT is in the future
+                    const ktDate = new Date(year, month, day);
+                    if (ktDate > now) {
+                        dayCell.className += ' border-blue-400 bg-blue-50 hover:bg-blue-100';
+                        const ktIndicator = document.createElement('div');
+                        ktIndicator.className = 'kt-indicator w-4 h-4 bg-blue-600 rounded-full absolute top-0.5 left-0.5 shadow-md z-10';
+                        dayCell.appendChild(ktIndicator);
+                    } else {
+                        dayCell.className += ' border-gray-200 hover:bg-gray-50';
+                    }
+                } else {
+                    dayCell.className += ' border-gray-200 hover:bg-gray-50';
+                }
+
+                dayCell.appendChild(dayNumber);
+
+                // Add click handler for KT dates
+                if (hasKt) {
+                    dayCell.onclick = () => {
+                        const kt = ktData.find(k => {
+                            const ktDate = new Date(k.date);
+                            return ktDate.getFullYear() === year &&
+                                   ktDate.getMonth() === month &&
+                                   ktDate.getDate() === day;
+                        });
+                        if (kt) openModal(kt);
+                    };
+                }
+
+                container.appendChild(dayCell);
+            }
+        }
+
+        // Modal functions
+        function openModal(kt) {
+            document.getElementById('modalTopic').textContent = kt.topic;
+            document.getElementById('modalPresenter').textContent = kt.presenter;
+            document.getElementById('modalDateTime').textContent = `${formatDate(kt.date)} at ${getDisplayTime(kt)}`;
+            document.getElementById('modalVenue').textContent = kt.venue;
+
+            const agendaList = document.getElementById('modalAgenda');
+            agendaList.innerHTML = '';
+            kt.agenda.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                agendaList.appendChild(li);
+            });
+
+            document.getElementById('modalRelevance').textContent = kt.relevance;
+            document.getElementById('ktModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('ktModal').classList.add('hidden');
+        }
+
+        // Close modal on background click
+        document.getElementById('ktModal').onclick = function(e) {
+            if (e.target === this) closeModal();
+        };
+
+        // Setup month navigation buttons
+        function setupMonthNavigation() {
+            document.getElementById('prevMonth').addEventListener('click', () => {
+                if (currentMonthOffset > 0) {
+                    currentMonthOffset--;
+                    renderCalendar();
+                }
+            });
+
+            document.getElementById('nextMonth').addEventListener('click', () => {
+                if (currentMonthOffset < 1) {
+                    currentMonthOffset++;
+                    renderCalendar();
+                }
+            });
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadKtData();
+        });
+    </script>
+</body>
+</html>

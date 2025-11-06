@@ -1,0 +1,52 @@
+[
+    {
+        "topic": "Outreach",
+        "presenter": "Ditya and Ayushya",
+        "date": "2025-11-06T22:00:00",
+        "time": "10:00 PM",
+        "venue": "FD1 1226",
+        "agenda": [
+            "Contact finding: how to find who",
+            "Cold email techniques",
+            "Streak CRM",
+            "App script mail merge",
+            "Demo run",
+            "Apollo.io",
+            "Clients 101: How to land and get clients"
+        ],
+        "relevance": "Essential skills for outreach and client acquisition in consulting projects."
+    },
+    {
+        "topic": "Research and Content",
+        "presenter": "Ranveer",
+        "date": "2025-11-14T00:00:00",
+        "time": "TBA",
+        "venue": "FD1",
+        "agenda": [
+            "TBA"
+        ],
+        "relevance": "Critical foundation for producing high-quality consulting deliverables."
+    },
+    {
+        "topic": "Figma",
+        "presenter": "Akshara and Ayushya",
+        "date": "2025-11-15T00:00:00",
+        "time": "TBA",
+        "venue": "FD1",
+        "agenda": [
+            "TBA"
+        ],
+        "relevance": "Design and prototyping skills for modern consulting presentations."
+    },
+    {
+        "topic": "Data Management",
+        "presenter": "Ayushya",
+        "date": "2025-11-16T00:00:00",
+        "time": "TBA",
+        "venue": "FD1",
+        "agenda": [
+            "Google Sheets"
+        ],
+        "relevance": "Fundamental data organization and analysis skills for consulting work."
+    }
+]
