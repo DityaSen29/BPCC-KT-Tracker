@@ -11,6 +11,8 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* Remove animated background */
@@ -103,6 +105,8 @@ main {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .month-nav-btn::before {
@@ -127,6 +131,10 @@ main {
     background: #2563eb;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+}
+
+.month-nav-btn:active {
+    transform: translateY(0);
 }
 
 .month-nav-btn:disabled {
@@ -162,11 +170,21 @@ main {
     transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
 }
 
 .calendar-day:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
+}
+
+/* Touch-friendly on mobile */
+@media (hover: none) and (pointer: coarse) {
+    .calendar-day:active {
+        transform: scale(0.95);
+        background-color: rgba(59, 130, 246, 0.1);
+    }
 }
 
 /* Today's Date */
@@ -223,10 +241,23 @@ main {
 
 .modal-close-btn {
     transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    padding: 0.5rem;
+    line-height: 1;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-close-btn:hover {
     transform: scale(1.1);
+}
+
+.modal-close-btn:active {
+    transform: scale(0.95);
 }
 
 /* Countdown Timer */
@@ -306,16 +337,167 @@ main {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    header h1 {
-        font-size: 1.5rem;
+    /* Header adjustments */
+    header {
+        padding: 0 !important;
     }
     
+    header .max-w-6xl {
+        padding: 1rem !important;
+    }
+    
+    header img {
+        height: 3rem !important;
+    }
+    
+    header h1 {
+        font-size: 1.25rem !important;
+    }
+    
+    header p {
+        font-size: 0.875rem !important;
+        margin-top: 0.25rem !important;
+    }
+    
+    /* Main content spacing */
+    main {
+        padding: 1rem !important;
+    }
+    
+    /* Next KT Widget */
+    #nextKtWidget {
+        padding: 1.5rem !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    #nextKtWidget h2 {
+        font-size: 1.5rem !important;
+    }
+    
+    #nextKtWidget p {
+        font-size: 0.875rem !important;
+    }
+    
+    #nextKtWidget .grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    #countdown {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Calendar section */
+    .calendar-section {
+        padding: 1.5rem !important;
+    }
+    
+    /* Month navigation */
+    .month-nav-btn {
+        padding: 0.5rem 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    #calendarTitle {
+        font-size: 1.25rem !important;
+    }
+    
+    /* Calendar grid */
     #calendarContainer {
-        gap: 4px;
+        gap: 2px !important;
+    }
+    
+    .day-header {
+        font-size: 0.625rem !important;
+        padding: 0.25rem 0 !important;
     }
     
     .calendar-day {
-        font-size: 0.875rem;
+        font-size: 0.75rem !important;
+        min-height: 40px !important;
+        border-width: 1px !important;
+    }
+    
+    .calendar-day span {
+        font-size: 0.75rem !important;
+    }
+    
+    /* KT indicators on mobile */
+    .kt-indicator {
+        width: 0.5rem !important;
+        height: 0.5rem !important;
+        top: 0.125rem !important;
+        left: 0.125rem !important;
+    }
+    
+    /* Modal adjustments */
+    .modal-content {
+        max-height: 90vh !important;
+        margin: 0.5rem !important;
+        max-width: calc(100vw - 1rem) !important;
+    }
+    
+    .modal-header {
+        padding: 1rem !important;
+    }
+    
+    .modal-header h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    .modal-body {
+        padding: 1rem !important;
+        max-height: calc(90vh - 60px) !important;
+    }
+    
+    .info-card {
+        padding: 0.75rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .info-card p {
+        font-size: 0.875rem !important;
+    }
+    
+    .agenda-list li {
+        font-size: 0.875rem !important;
+        padding-left: 1.25rem !important;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1rem !important;
+    }
+    
+    header p {
+        font-size: 0.75rem !important;
+    }
+    
+    header img {
+        height: 2.5rem !important;
+    }
+    
+    #nextKtWidget h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    #calendarTitle {
+        font-size: 1rem !important;
+    }
+    
+    .month-nav-btn span {
+        font-size: 0.75rem !important;
+    }
+    
+    .calendar-day {
+        min-height: 35px !important;
+        font-size: 0.625rem !important;
+    }
+    
+    .day-header {
+        font-size: 0.5rem !important;
     }
 }
 
