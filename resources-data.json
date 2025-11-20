@@ -1,0 +1,16 @@
+[
+    {
+        "title": "Outreach - KT Session 1",
+        "date": "2025-11-06",
+        "presenter": "Ditya and Ayushya",
+        "file": "resources/KT-1.pdf",
+        "description": "Contact finding, cold email techniques, CRM tools, and client acquisition strategies"
+    },
+    {
+        "title": "Google Sheets and Data Management - KT Session 2",
+        "date": "2025-11-17",
+        "presenter": "Ayushya",
+        "file": "resources/KT-2.pdf",
+        "description": "Data organization, formulas, functions, and analysis best practices"
+    }
+]

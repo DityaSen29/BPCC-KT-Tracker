@@ -17,36 +17,61 @@
         "relevance": "Essential skills for outreach and client acquisition in consulting projects."
     },
     {
-        "topic": "Research and Content",
-        "presenter": "Ranveer",
-        "date": "2025-11-14T00:00:00",
-        "time": "TBA",
+        "topic": "Google Sheets and Data Management",
+        "presenter": "Ayushya",
+        "date": "2025-11-17T21:00:00",
+        "time": "9:00 PM",
         "venue": "FD1",
         "agenda": [
-            "TBA"
+            "Google Sheets fundamentals",
+            "Data organization techniques",
+            "Formulas and functions",
+            "Data analysis basics",
+            "Best practices for consulting data management"
+        ],
+        "relevance": "Fundamental data organization and analysis skills essential for consulting work and case studies."
+    },
+    {
+        "topic": "Researching as a Consultant",
+        "presenter": "Prithwish and Anurodh",
+        "date": "2025-11-20T20:00:00",
+        "time": "8:00 PM",
+        "venue": "FD1",
+        "agenda": [
+            "How to Research",
+            "Need for it",
+            "Industry Analysis",
+            "Top Down and Bottom Up Research"
         ],
         "relevance": "Critical foundation for producing high-quality consulting deliverables."
     },
     {
-        "topic": "Figma",
-        "presenter": "Akshara and Ayushya",
-        "date": "2025-11-15T00:00:00",
-        "time": "TBA",
+        "topic": "Intro to LinkedIn and Content Writing",
+        "presenter": "Prapti and Shivie",
+        "date": "2025-11-22T20:00:00",
+        "time": "8:00 PM",
         "venue": "FD1",
         "agenda": [
-            "TBA"
+            "LinkedIn profile optimization",
+            "Content writing strategies",
+            "Professional networking",
+            "Personal branding essentials"
         ],
-        "relevance": "Design and prototyping skills for modern consulting presentations."
+        "relevance": "Build your professional presence and learn effective communication skills for the consulting industry."
     },
     {
-        "topic": "Data Management",
-        "presenter": "Ayushya",
-        "date": "2025-11-16T00:00:00",
-        "time": "TBA",
+        "topic": "Design and Business Communication",
+        "presenter": "Ayushya and Shubhra",
+        "date": "2025-11-25T20:00:00",
+        "time": "8:00 PM",
         "venue": "FD1",
         "agenda": [
-            "Google Sheets"
+            "Design principles for presentations",
+            "Business communication fundamentals",
+            "Visual storytelling",
+            "Case competition preparation",
+            "Final probation task guidelines"
         ],
-        "relevance": "Fundamental data organization and analysis skills for consulting work."
+        "relevance": "Extended session covering two critical topics for the Case Competition and final probation task. Essential for delivering impactful consulting presentations."
     }
 ]
